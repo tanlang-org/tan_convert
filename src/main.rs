@@ -1,4 +1,8 @@
 use clap::{Arg, Command};
+use tan::{
+    api::eval_string,
+    eval::{env::Env, prelude::setup_prelude},
+};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -32,6 +36,14 @@ fn main() -> anyhow::Result<()> {
         .expect("missing path to the output file");
 
     dbg!(input_path, output_path);
+
+    let input = std::fs::read_to_string(input_path).expect("cannot read input");
+
+    let mut env = setup_prelude(Env::default());
+
+    let value = eval_string(&input, &mut env);
+
+    dbg!(&value);
 
     Ok(())
 }
