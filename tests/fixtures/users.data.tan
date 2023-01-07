@@ -1,10 +1,16 @@
+-- A collection of users
 [
     {
         :name "gmosx"
         :given_name "George"
-        :family_name "Moschovitis"
+        :family_name #cool "Moschovitis"
         :score 89
+        :labels [
+            "admin"
+            "owner"
+        ]
     }
+    -- Let's add a comment!
     {
         :name "costas"
         :given_name "Costas"
@@ -12,9 +18,10 @@
         :score 100
     }
     {
-        :name "eleni"
+        :name "eleni" -- nice :)
         :given_name "Eleni"
         :family_name "Constantopoulos"
-        :score 99
+        :score #wow 99
+        :labels [ :female ]
     }
 ]
