@@ -1,10 +1,65 @@
 use clap::{Arg, Command};
+use serde_json::{Map, Value};
 use tan::{
     api::eval_string,
     eval::{env::Env, prelude::setup_prelude},
+    expr::Expr,
 };
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+// #TODO visitor pattern
+// #TODO Expr.fold, no need, will get it for free from an Expr iterator.
+// #TODO this is the visitor pattern.
+// fn traverse<E>(expr: E, f: Rc<dyn Fn(&Expr)>)
+// where
+//     E: AsRef<Expr>,
+// {
+//     let expr = expr.as_ref();
+
+//     match expr {
+//         Expr::Array(exprs) => {
+//             for x in exprs {
+//                 // #TODO ARRRGGhhh, Rc!!
+//                 traverse(x, f.clone());
+//             }
+//         }
+//         Expr::List(exprs) => {
+//             for x in exprs {
+//                 // #TODO ARRRGGhhh, Rc!!
+//                 traverse(x, f.clone());
+//             }
+//         }
+//         _ => f(expr),
+//     }
+// }
+
+fn expr_to_json<E>(expr: E) -> Value
+where
+    E: AsRef<Expr>,
+{
+    let expr = expr.as_ref();
+
+    match expr {
+        Expr::Array(exprs) => {
+            let mut arr = Vec::new();
+            for x in exprs {
+                arr.push(expr_to_json(x));
+            }
+            Value::Array(arr)
+        }
+        Expr::Dict(dict) => {
+            let mut obj = Map::new();
+            for (k, v) in dict {
+                obj.insert(k.to_string(), expr_to_json(v));
+            }
+            Value::Object(obj)
+        }
+        Expr::String(s) => Value::String(s.clone()),
+        Expr::Symbol(s) => Value::String(s.clone()),
+        _ => Value::String("Unknown".to_string()),
+    }
+}
 
 fn main() -> anyhow::Result<()> {
     let cmd = Command::new("tan_convert")
@@ -39,10 +94,16 @@ fn main() -> anyhow::Result<()> {
 
     let mut env = setup_prelude(Env::default());
 
-    let value = eval_string(&input, &mut env);
+    let value = eval_string(&input, &mut env)?;
 
-    dbg!(&value);
     dbg!(&output_path);
+    // dbg!(&value);
+
+    let json = expr_to_json(&value);
+
+    // dbg!(json);
+
+    println!("{}", serde_json::to_string_pretty(&json).unwrap());
 
     Ok(())
 }
