@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use serde_json::{Map, Value};
+use serde_json::{Map, Number, Value};
 use tan::{
     api::eval_string,
     eval::{env::Env, prelude::setup_prelude},
@@ -31,6 +31,7 @@ where
         }
         Expr::String(s) => Value::String(s.clone()),
         Expr::Symbol(s) => Value::String(s.clone()),
+        Expr::Int(n) => Value::Number(Number::from_f64(*n as f64).unwrap()),
         _ => Value::String("Unknown".to_string()),
     }
 }

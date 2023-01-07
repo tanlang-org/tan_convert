@@ -3,15 +3,18 @@
         :name "gmosx"
         :given_name "George"
         :family_name "Moschovitis"
+        :score 89
     }
     {
         :name "costas"
         :given_name "Costas"
         :family_name "Moschovitis"
+        :score 100
     }
     {
         :name "eleni"
         :given_name "Eleni"
         :family_name "Constantopoulos"
+        :score 99
     }
 ]
