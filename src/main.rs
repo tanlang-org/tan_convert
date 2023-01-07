@@ -35,8 +35,6 @@ fn main() -> anyhow::Result<()> {
         .get_one("OUTPUT")
         .expect("missing path to the output file");
 
-    dbg!(input_path, output_path);
-
     let input = std::fs::read_to_string(input_path).expect("cannot read input");
 
     let mut env = setup_prelude(Env::default());
@@ -44,6 +42,7 @@ fn main() -> anyhow::Result<()> {
     let value = eval_string(&input, &mut env);
 
     dbg!(&value);
+    dbg!(&output_path);
 
     Ok(())
 }
