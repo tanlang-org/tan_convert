@@ -31,6 +31,7 @@ where
         }
         Expr::String(s) => Value::String(s.clone()),
         Expr::Symbol(s) => Value::String(s.clone()),
+        Expr::KeySymbol(s) => Value::String(s.clone()),
         Expr::Int(n) => Value::Number(Number::from_f64(*n as f64).unwrap()),
         _ => Value::String("Unknown".to_string()),
     }
