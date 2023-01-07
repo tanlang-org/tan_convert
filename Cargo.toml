@@ -1,0 +1,8 @@
+[package]
+name = "tan_convert"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+clap = "4"

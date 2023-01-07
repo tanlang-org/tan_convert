@@ -1,0 +1,17 @@
+[
+    {
+        :name "gmosx"
+        :given_name "George"
+        :family_name "Moschovitis"
+    }
+    {
+        :name "costas"
+        :given_name "Costas"
+        :family_name "Moschovitis"
+    }
+    {
+        :name "eleni"
+        :given_name "Eleni"
+        :family_name "Constantopoulos"
+    }
+]
