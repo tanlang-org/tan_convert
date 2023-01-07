@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use serde_json::{Map, Number, Value};
+use serde_json::{json, Map, Value};
 use tan::{
     api::eval_string,
     eval::{env::Env, prelude::setup_prelude},
@@ -8,11 +8,19 @@ use tan::{
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+// #TODO json_to_expr
+
 fn expr_to_json<E>(expr: E) -> Value
 where
     E: AsRef<Expr>,
 {
     let expr = expr.as_ref();
+
+    // #TODO support multi-line strings
+    // #TODO Float
+    // #TODO Bool
+    // #TODO Null
+    // #TODO somehow encode annotations.
 
     match expr {
         Expr::Array(exprs) => {
@@ -32,8 +40,8 @@ where
         Expr::String(s) => Value::String(s.clone()),
         Expr::Symbol(s) => Value::String(s.clone()),
         Expr::KeySymbol(s) => Value::String(s.clone()),
-        Expr::Int(n) => Value::Number(Number::from_f64(*n as f64).unwrap()),
-        _ => Value::String("Unknown".to_string()),
+        Expr::Int(n) => json!(n),
+        _ => Value::String("Unknown".to_string()), // #TODO remove!
     }
 }
 
