@@ -1,0 +1,33 @@
+[
+  {
+    "family_name": "Moschovitis",
+    "given_name": "George",
+    "labels": [
+      "admin",
+      "owner"
+    ],
+    "name": "gmosx",
+    "score": 89,
+    "weight": 0.34,
+    "wise": false
+  },
+  {
+    "family_name": "Moschovitis",
+    "given_name": "Costas",
+    "name": "costas",
+    "score": 100,
+    "weight:": 1.0,
+    "wise": true
+  },
+  {
+    "family_name": "Constantopoulos",
+    "given_name": "Eleni",
+    "labels": [
+      "female"
+    ],
+    "name": "eleni",
+    "score": 99,
+    "weight:": 0.99,
+    "wise": true
+  }
+]

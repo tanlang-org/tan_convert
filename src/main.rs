@@ -1,3 +1,5 @@
+use std::fs;
+
 use clap::{Arg, Command};
 use serde_json::{json, Map, Value};
 use tan::{
@@ -8,8 +10,12 @@ use tan::{
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-// #TODO json_to_expr
+// #TODO implement!
+// fn json_to_expr(json: Value) -> Expr {
+//     todo!()
+// }
 
+/// Convers a symbolic Expr to a JSON Value.
 fn expr_to_json<E>(expr: E) -> Value
 where
     E: AsRef<Expr>,
@@ -17,7 +23,6 @@ where
     let expr = expr.as_ref();
 
     // #TODO support multi-line strings
-    // #TODO Bool
     // #TODO Null
     // #TODO somehow encode annotations.
 
@@ -75,20 +80,17 @@ fn main() -> anyhow::Result<()> {
         .get_one("OUTPUT")
         .expect("missing path to the output file");
 
-    let input = std::fs::read_to_string(input_path).expect("cannot read input");
+    let input = fs::read_to_string(input_path).expect("cannot read input");
 
     let mut env = setup_prelude(Env::default());
 
     let value = eval_string(&input, &mut env)?;
 
-    dbg!(&output_path);
-    // dbg!(&value);
-
     let json = expr_to_json(&value);
 
-    // dbg!(json);
+    let json = serde_json::to_string_pretty(&json)?;
 
-    println!("{}", serde_json::to_string_pretty(&json).unwrap());
+    fs::write(output_path, json)?;
 
     Ok(())
 }
