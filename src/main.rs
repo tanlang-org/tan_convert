@@ -41,6 +41,7 @@ where
         Expr::KeySymbol(s) => Value::String(s.clone()),
         Expr::Int(n) => json!(n),
         Expr::Float(n) => json!(n),
+        Expr::Bool(b) => Value::Bool(*b),
         _ => Value::String("Unknown".to_string()), // #TODO remove!
     }
 }
