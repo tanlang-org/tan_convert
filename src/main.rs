@@ -31,7 +31,7 @@ fn json_to_expr(json: Value) -> Expr {
         Value::String(s) => Expr::String(s),
         Value::Number(n) => Expr::Float(n.as_f64().unwrap()), // #TODO handle Int, Float, remove unwrap!
         Value::Bool(b) => Expr::Bool(b),
-        _ => Expr::string("Unknown"), // #TODO remove!
+        Value::Null => Expr::One, // #TODO is Unit the correct mapping?
     }
 }
 
@@ -67,7 +67,7 @@ where
         Expr::Int(n) => json!(n),
         Expr::Float(n) => json!(n),
         Expr::Bool(b) => Value::Bool(*b),
-        _ => Value::String("Unknown".to_string()), // #TODO remove!
+        _ => Value::String("Unsupported".to_string()), // #TODO remove!
     }
 }
 
