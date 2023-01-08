@@ -1,6 +1,11 @@
 [package]
 name = "tan_convert"
-version = "0.1.0"
+description = "A CLI for converting Tan text and binary files from/to other formats"
+version = "0.3.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tanlang-org/tan_convert"
+keywords = ["tan", "convert", "json", "cli"]
+authors = ["George Moschovitis <gmosx@reizu.org>"]
 edition = "2021"
 
 [dependencies]

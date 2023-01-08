@@ -11,13 +11,8 @@ cargo install --path .
 ## Usage
 
 ```sh
-cargo run -- tests/fixtures/users.data.tan tests/fixtures/users.json
-```
-
-or
-
-```sh
-tan-convert tests/fixtures/users.data.tan users.json
+tan-convert users.data.tan users.json
+tan-convert users.json users_converted.data.tan
 ```
 
 ## Status

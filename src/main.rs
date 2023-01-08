@@ -11,6 +11,7 @@ use tan::{
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+/// Converts a JSON Value to a symbolic Expr.
 fn json_to_expr(json: Value) -> Expr {
     match json {
         Value::Array(vals) => {
@@ -34,7 +35,7 @@ fn json_to_expr(json: Value) -> Expr {
     }
 }
 
-/// Convers a symbolic Expr to a JSON Value.
+/// Converts a symbolic Expr to a JSON Value.
 fn expr_to_json<E>(expr: E) -> Value
 where
     E: AsRef<Expr>,
@@ -42,7 +43,7 @@ where
     let expr = expr.as_ref();
 
     // #TODO support multi-line strings
-    // #TODO Null
+    // #TODO support Null
     // #TODO somehow encode annotations.
 
     match expr {

@@ -210,7 +210,7 @@ version = "0.3.0"
 
 [[package]]
 name = "tan_convert"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "clap",
