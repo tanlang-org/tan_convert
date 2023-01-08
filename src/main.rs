@@ -17,7 +17,6 @@ where
     let expr = expr.as_ref();
 
     // #TODO support multi-line strings
-    // #TODO Float
     // #TODO Bool
     // #TODO Null
     // #TODO somehow encode annotations.
@@ -41,6 +40,7 @@ where
         Expr::Symbol(s) => Value::String(s.clone()),
         Expr::KeySymbol(s) => Value::String(s.clone()),
         Expr::Int(n) => json!(n),
+        Expr::Float(n) => json!(n),
         _ => Value::String("Unknown".to_string()), // #TODO remove!
     }
 }
