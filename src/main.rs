@@ -1,5 +1,6 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
+use anyhow::anyhow;
 use clap::{Arg, Command};
 use serde_json::{json, Map, Value};
 use tan::{
@@ -10,10 +11,28 @@ use tan::{
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-// #TODO implement!
-// fn json_to_expr(json: Value) -> Expr {
-//     todo!()
-// }
+fn json_to_expr(json: Value) -> Expr {
+    match json {
+        Value::Array(vals) => {
+            let mut arr = Vec::new();
+            for v in vals {
+                arr.push(json_to_expr(v));
+            }
+            Expr::Array(arr)
+        }
+        Value::Object(obj) => {
+            let mut dict = HashMap::new();
+            for (k, v) in obj {
+                dict.insert(k.clone(), json_to_expr(v));
+            }
+            Expr::Dict(dict)
+        }
+        Value::String(s) => Expr::String(s),
+        Value::Number(n) => Expr::Float(n.as_f64().unwrap()), // #TODO handle Int, Float, remove unwrap!
+        Value::Bool(b) => Expr::Bool(b),
+        _ => Expr::string("Unknown"), // #TODO remove!
+    }
+}
 
 /// Convers a symbolic Expr to a JSON Value.
 fn expr_to_json<E>(expr: E) -> Value
@@ -82,15 +101,20 @@ fn main() -> anyhow::Result<()> {
 
     let input = fs::read_to_string(input_path).expect("cannot read input");
 
-    let mut env = setup_prelude(Env::default());
+    let output = if input_path.ends_with(".tan") && output_path.ends_with(".json") {
+        let mut env = setup_prelude(Env::default());
+        let value = eval_string(&input, &mut env)?;
+        let json = expr_to_json(&value);
+        serde_json::to_string_pretty(&json)?
+    } else if input_path.ends_with(".json") && output_path.ends_with(".tan") {
+        let json = serde_json::from_str(&input)?;
+        let expr = json_to_expr(json);
+        expr.to_string()
+    } else {
+        return Err(anyhow!("unsupported conversion"));
+    };
 
-    let value = eval_string(&input, &mut env)?;
-
-    let json = expr_to_json(&value);
-
-    let json = serde_json::to_string_pretty(&json)?;
-
-    fs::write(output_path, json)?;
+    fs::write(output_path, output)?;
 
     Ok(())
 }
