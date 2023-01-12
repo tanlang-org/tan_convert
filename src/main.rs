@@ -3,11 +3,9 @@ use std::{collections::HashMap, fs};
 use anyhow::anyhow;
 use clap::{Arg, Command};
 use serde_json::{json, Map, Value};
-use tan::{
-    api::eval_string,
-    eval::{env::Env, prelude::setup_prelude},
-    expr::Expr,
-};
+use tan::{api::parse_string, expr::Expr};
+
+// #TODO have option to 'eval' the Tan expression before converting!
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -100,9 +98,9 @@ fn main() -> anyhow::Result<()> {
     let input = fs::read_to_string(input_path).expect("cannot read input");
 
     let output = if input_path.ends_with(".tan") && output_path.ends_with(".json") {
-        let mut env = setup_prelude(Env::default());
-        let value = eval_string(&input, &mut env)?;
-        let json = expr_to_json(&value);
+        // #TODO consider _optionally_ evaluating the expression, before converting?
+        let expr = parse_string(&input)?;
+        let json = expr_to_json(&expr);
         serde_json::to_string_pretty(&json)?
     } else if input_path.ends_with(".json") && output_path.ends_with(".tan") {
         let json = serde_json::from_str(&input)?;
