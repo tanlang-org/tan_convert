@@ -36,10 +36,7 @@ fn json_to_expr(json: Value) -> Expr {
 }
 
 /// Converts a symbolic Expr to a JSON Value.
-fn expr_to_json<E>(expr: E) -> Value
-where
-    E: AsRef<Expr>,
-{
+fn expr_to_json(expr: impl AsRef<Expr>) -> Value {
     let expr = expr.as_ref();
 
     // #TODO support multi-line strings
