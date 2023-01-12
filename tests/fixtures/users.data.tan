@@ -18,7 +18,7 @@
         :given_name "Costas"
         :family_name "Moschovitis"
         :score 100
-        :weight: 1.0
+        :weight 1.0
         :wise true
     }
     {
@@ -26,7 +26,7 @@
         :given_name "Eleni"
         :family_name "Constantopoulos"
         :score #wow 99
-        :weight: 0.99
+        :weight 0.99
         :wise true
         :labels [ :female ]
     }

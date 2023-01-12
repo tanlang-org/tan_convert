@@ -33,6 +33,7 @@ fn json_to_expr(json: Value) -> Expr {
     }
 }
 
+// #TODO add comprehensive unit tests.
 /// Converts a symbolic Expr to a JSON Value.
 fn expr_to_json(expr: impl AsRef<Expr>) -> Value {
     let expr = expr.as_ref();
