@@ -33,7 +33,7 @@ fn json_to_expr(json: Value) -> Expr {
     }
 }
 
-// #TODO try to use ExprIter / fold.
+// #TODO try to use ExprIter / fold -> maybe not the best use-case.
 // #TODO add comprehensive unit tests.
 /// Converts a symbolic Expr to a JSON Value.
 fn expr_to_json(expr: impl AsRef<Expr>) -> Value {
