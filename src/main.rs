@@ -3,7 +3,11 @@ use std::{collections::HashMap, fs};
 use anyhow::anyhow;
 use clap::{Arg, Command};
 use serde_json::{json, Map, Value};
-use tan::{api::parse_string, expr::Expr};
+use tan::{
+    ann::Ann, api::parse_string_all, eval::env::Env, expr::Expr, macro_expand::macro_expand,
+    optimize::optimize,
+};
+use tan_fmt::pretty::Formatter;
 
 // #TODO have option to 'eval' the Tan expression before converting!
 
@@ -12,10 +16,10 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 /// Converts a JSON Value to a symbolic Expr.
 fn json_to_expr(json: Value) -> Expr {
     match json {
-        Value::Array(vals) => {
+        Value::Array(items) => {
             let mut arr = Vec::new();
-            for v in vals {
-                arr.push(json_to_expr(v));
+            for item in items {
+                arr.push(json_to_expr(item));
             }
             Expr::Array(arr)
         }
@@ -42,6 +46,7 @@ fn expr_to_json(expr: impl AsRef<Expr>) -> Value {
     // #TODO support multi-line strings
     // #TODO support Null
     // #TODO somehow encode annotations.
+    // #TODO strip comments!
 
     match expr {
         Expr::Array(exprs) => {
@@ -101,13 +106,53 @@ fn main() -> anyhow::Result<()> {
 
     let output = if input_path.ends_with(".tan") && output_path.ends_with(".json") {
         // #TODO consider _optionally_ evaluating the expression, before converting?
-        let expr = parse_string(&input)?;
-        let json = expr_to_json(&expr);
+        // #TODO extract the error.
+        let result = parse_string_all(&input);
+        let Ok(exprs) = parse_string_all(&input) else {
+            let errors = result.unwrap_err();
+            for error in errors {
+                println!("{error}");
+            }
+            return Err(anyhow!("cannot parse input"));
+        };
+
+        // #TODO super-ugly, temp code.
+
+        let mut resolved_exprs: Vec<Ann<Expr>> = Vec::new();
+        for expr in exprs {
+            // Expand macros, needed to remove comments
+
+            let mut env = Env::prelude();
+            let expr = macro_expand(expr, &mut env);
+
+            // #TODO temp hack until macro_expand returns multiple errors.
+            let Ok(expr) = expr else {
+                return Err(anyhow!("cannot expand input"));
+            };
+
+            let Some(expr) = expr else {
+                // The expression is pruned (elided)
+                continue;
+            };
+
+            // Optimization pass need to convert to Expr::Array, Expr::Dict
+
+            let expr = optimize(expr);
+
+            resolved_exprs.push(expr);
+        }
+
+        let expr = &resolved_exprs[0];
+
+        let json = expr_to_json(expr);
         serde_json::to_string_pretty(&json)?
     } else if input_path.ends_with(".json") && output_path.ends_with(".tan") {
         let json = serde_json::from_str(&input)?;
         let expr = json_to_expr(json);
-        expr.to_string()
+
+        let exprs = vec![expr.into()];
+        let mut formatter = Formatter::new(&exprs);
+        formatter.format()
     } else {
         return Err(anyhow!("unsupported conversion"));
     };
