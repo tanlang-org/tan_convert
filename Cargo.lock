@@ -206,11 +206,11 @@ dependencies = [
 
 [[package]]
 name = "tan"
-version = "0.4.0"
+version = "0.5.0"
 
 [[package]]
 name = "tan_convert"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -222,7 +222,7 @@ dependencies = [
 
 [[package]]
 name = "tan_fmt"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "tan",
 ]
